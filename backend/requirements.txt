@@ -1,0 +1,20 @@
+fastapi>=0.115
+uvicorn[standard]>=0.34
+pydantic>=2.9
+torch>=2.2
+transformers>=4.40,<5.0.0
+numpy>=1.26
+matplotlib>=3.8
+requests>=2.31
+python-dotenv>=1.0
+
+# Everything above is a minimum-version range, not an exact pin, because
+# prebuilt-wheel availability depends heavily on your Python version -- an
+# exact old pin can have no wheel for a newer interpreter and fall back to
+# a from-source build (needs a Rust/C++ toolchain, or just fails outright,
+# as pydantic-core/pyo3 currently does on Python 3.14). If you're on an
+# older, more common Python (3.10-3.12) you can pin exact versions instead.
+# `inference.py` is written against the transformers 4.x API (BertModel,
+# BertTokenizerFast, pipeline) -- the <5.0.0 cap avoids an untested breaking
+# change; if you need transformers 5.x, re-validate inference.py against it
+# first, since that file is copied as-is from the training notebook.

@@ -1,0 +1,2 @@
+.claude/scheduled_tasks.lock
+backend/app/model_weights.pt

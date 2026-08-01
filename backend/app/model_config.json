@@ -1,0 +1,65 @@
+{
+  "config": {
+    "DATA_PATH": "dataset_final_v6.csv",
+    "MAX_LEN": 112,
+    "TARGET_MODE": "abs",
+    "LOG_TARGET": true,
+    "VOL_COL": "volatility_10d",
+    "CAR_COL": "car_pct",
+    "POOLING": "pooler",
+    "FREEZE_LAYERS": 6,
+    "HEAD": "mlp",
+    "MLP_HIDDEN": [
+      256,
+      64
+    ],
+    "FUSION": "concat",
+    "DROPOUT": 0.3,
+    "LR_BERT": 2e-05,
+    "LR_HEAD": 0.001,
+    "BATCH_SIZE": 16,
+    "EPOCHS": 15,
+    "PATIENCE": 3,
+    "GRAD_CLIP": 1.0,
+    "N_SEEDS": 3,
+    "SEED_BASE": 42,
+    "SIG_PCT": 0.8
+  },
+  "feature_cols": [
+    "time_since_open",
+    "volatility_10d",
+    "is_company_specific",
+    "is_local_source",
+    "n_articles_log",
+    "cat_company_event",
+    "cat_macro",
+    "cat_general"
+  ],
+  "categories": [
+    "company_event",
+    "macro",
+    "general"
+  ],
+  "cat_to_idx": {
+    "company_event": 0,
+    "macro": 1,
+    "general": 2
+  },
+  "n_numeric": 8,
+  "delta": 0.015,
+  "significance_cutoff": 0.018576847886585205,
+  "baseline_rmse": 0.012576710790640532,
+  "deployed_seed": 44,
+  "final_metrics": {
+    "RMSE": 0.012103916145861149,
+    "MAE": 0.008413877338171005,
+    "R2": 0.07376664876937866,
+    "Pearson": 0.296283666285283,
+    "Spearman": 0.1550756345134564,
+    "PR_AUC": 0.32891391075162574,
+    "baseline_RMSE": 0.012576710790640532,
+    "random_baseline_precision": 0.2168458781362007
+  },
+  "max_gap_days": 5,
+  "vol_window_days": 10
+}
