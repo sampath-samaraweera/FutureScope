@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from typing import List
 
+from cse_lib import cse_client
 from fastapi import APIRouter, HTTPException
 
-from .. import cse_client
 from ..schemas import CompanySnapshot, CompanySummary, PriceHistoryPoint
 
 router = APIRouter(tags=["companies"])

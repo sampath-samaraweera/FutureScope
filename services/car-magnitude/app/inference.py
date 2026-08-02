@@ -84,9 +84,7 @@ class CARPredictor:
             "predicted_car_magnitude_pct": round(predicted_car_pct * 100, 3),
             "is_likely_significant": bool(predicted_car_pct >= self.export["significance_cutoff"]),
             "significance_cutoff_pct": round(self.export["significance_cutoff"] * 100, 3),
-            "magnitude_note": ("VALIDATED research output -- PR-AUC 44% above random baseline, "
-                              "confirmed across 11 independent training runs. Predicts SIZE of "
-                              "reaction only, not direction (confirmed unlearnable from text)."),
+            "magnitude_note": (""),
         }
 
         if include_sentiment and self.sentiment_pipe is not None:

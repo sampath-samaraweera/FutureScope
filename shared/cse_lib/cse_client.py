@@ -18,23 +18,9 @@ don't automate that login):
                                     Requires the `accessToken` cookie from an
                                     active cse.lk browser session. Set it as
                                     CSE_ACCESS_TOKEN in backend/.env; refresh
-                                    it there whenever it stops working.
-
-                                    FOUND (after wrongly suspecting header
-                                    casing, curl-vs-Python TLS fingerprints,
-                                    and CSE-side non-determinism first --
-                                    each looked plausible under some test
-                                    until a better one disproved it): this
-                                    endpoint rejects (401/417) date ranges
-                                    wider than ~31 calendar days. Every
-                                    earlier "confirmed" theory was actually
-                                    just testing with a hardcoded ~31-day
-                                    example range (which passes) while the
-                                    real code was computing a 45-day range
-                                    (which fails) -- a direct A/B test of
-                                    only the date range, everything else
-                                    held constant, settled it: 31 days = 200,
-                                    45 days = 401. See CHARTS_MAX_RANGE_DAYS.
+                                    it there whenever it stops working. Also
+                                    rejects (401/417) date ranges wider than
+                                    ~31 calendar days -- see CHARTS_MAX_RANGE_DAYS.
 
 If CSE_ACCESS_TOKEN is missing or has expired, functions that need it raise
 CSEAuthError with a message suitable for surfacing straight to the API caller
@@ -62,12 +48,8 @@ REQUEST_TIMEOUT = 15
 ANN_FACTOR = 252  # trading days/year -- must match prepare_dataset_v6.py's ANN_FACTOR
 VOL_WINDOW = 10    # must match the volatility_10d feature the model was trained on
 
-# The actual root cause of what looked like WAF flakiness during development:
-# /api/charts silently rejects (401/417) date ranges wider than ~31 calendar
-# days -- confirmed by direct A/B test: a 31-day range succeeded every time,
-# a 45-day range (what this code used to request) failed every time, same
-# token, same request otherwise. Keep comfortably under the confirmed-working
-# 31 days. 30 calendar days is still >20 trading days -- plenty for VOL_WINDOW.
+# /api/charts rejects ranges over ~31 days; keep a margin. Still >20 trading
+# days, plenty for VOL_WINDOW.
 CHARTS_MAX_RANGE_DAYS = 30
 
 _BANK_NAME_RE = re.compile(r"\bBANK\b", re.I)
@@ -130,16 +112,10 @@ def fetch_company_info(symbol: str) -> dict:
 def fetch_price_history(symbol: str, from_date: datetime, to_date: datetime, period: int = 1) -> list[dict]:
     """
     Daily price history for `symbol` between from_date/to_date. Requires
-    CSE_ACCESS_TOKEN (a live cse.lk session cookie) -- raises CSEAuthError if
-    it's missing, or if CSE's response indicates the session is invalid.
-
-    Confirmed response shape (2026-08-01, real token): a bare JSON array of
-    {open, high, low, close, turnover, shareVolume, tradeVolume, tradeDate}
-    (tradeDate is epoch milliseconds), newest-first. This parses that shape
-    plus a couple of close-enough fallbacks in case CSE changes it.
-
-    Callers must keep (to_date - from_date) under CHARTS_MAX_RANGE_DAYS --
-    see the module docstring for why.
+    CSE_ACCESS_TOKEN; raises CSEAuthError if missing/invalid. Response is a
+    bare JSON array of {open, high, low, close, turnover, shareVolume,
+    tradeVolume, tradeDate} (tradeDate = epoch ms), newest-first. Keep
+    (to_date - from_date) under CHARTS_MAX_RANGE_DAYS.
     """
     token = get_access_token()
     if not token:
@@ -150,9 +126,6 @@ def fetch_price_history(symbol: str, from_date: datetime, to_date: datetime, per
             "CSE_ACCESS_TOKEN in backend/.env, then restart the backend."
         )
 
-    # Built fresh per call (not merged on top of COMMON_HEADERS) -- mirrors
-    # abc.py's exact structure: a single canonical Referer key with the
-    # right symbol in it, a Session with the cookie set on it, one .post().
     headers = {
         "Accept": "application/json",
         "Origin": BASE_URL,

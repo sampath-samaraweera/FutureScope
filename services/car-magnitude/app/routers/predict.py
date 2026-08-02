@@ -1,9 +1,9 @@
+from cse_lib import cse_client
+from cse_lib.category import CATEGORY_LABELS, classify_category_v2
+from cse_lib.validation import is_gibberish, ticker_mentioned_in_headline
 from fastapi import APIRouter, HTTPException, Request
 
-from .. import cse_client
-from ..category import CATEGORY_LABELS, classify_category_v2
 from ..schemas import PredictRequest, PredictResponse
-from ..validation import is_gibberish, ticker_mentioned_in_headline
 
 router = APIRouter(tags=["predict"])
 

@@ -53,7 +53,7 @@ export default function Home() {
           {!loading && !error && result && <ResultsCard result={result} />}
           {!loading && !error && !result && (
             <div className="flex h-full min-h-[200px] items-center justify-center rounded-lg border border-dashed border-slate-300 text-sm text-slate-400">
-              Results will appear here.
+              Results.
             </div>
           )}
         </div>
