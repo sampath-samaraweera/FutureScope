@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Validation from './pages/Validation';
 import CompanySnapshot from './pages/CompanySnapshot';
+import ReturnForecast from './pages/ReturnForecast';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -28,6 +29,9 @@ function App() {
             <NavLink to="/companies" className={navLinkClass}>
               Company Snapshot
             </NavLink>
+            <NavLink to="/forecast" className={navLinkClass}>
+              Return Forecast
+            </NavLink>
           </nav>
         </div>
       </header>
@@ -37,6 +41,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/validation" element={<Validation />} />
           <Route path="/companies" element={<CompanySnapshot />} />
+          <Route path="/forecast" element={<ReturnForecast />} />
         </Routes>
       </main>
 

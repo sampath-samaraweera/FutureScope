@@ -1,0 +1,14 @@
+-e ../../shared
+fastapi>=0.115
+uvicorn[standard]>=0.34
+pydantic>=2.9
+torch>=2.2
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.4
+requests>=2.31
+python-dotenv>=1.0
+
+# Minimum-version ranges, not exact pins -- see services/car-magnitude/requirements.txt
+# for why (Python 3.14 wheel availability). model.py loads a PyTorch
+# checkpoint (stock_prediction_model.pt), not Keras -- no tensorflow needed.
