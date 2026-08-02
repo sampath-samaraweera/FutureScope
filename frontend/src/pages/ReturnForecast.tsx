@@ -128,6 +128,8 @@ function LiveForecastSection() {
                     <th className="py-1.5 text-right">High</th>
                     <th className="py-1.5 text-right">Low</th>
                     <th className="py-1.5 text-right">Close</th>
+                    <th className="py-1.5 text-right">Trade Vol.</th>
+                    <th className="py-1.5 text-right">Share Vol.</th>
                     <th className="py-1.5 text-right">Turnover</th>
                   </tr>
                 </thead>
@@ -139,6 +141,12 @@ function LiveForecastSection() {
                       <td className="py-1.5 text-right text-slate-900">{p.high?.toFixed(2) ?? '—'}</td>
                       <td className="py-1.5 text-right text-slate-900">{p.low?.toFixed(2) ?? '—'}</td>
                       <td className="py-1.5 text-right text-slate-900">{p.close?.toFixed(2) ?? '—'}</td>
+                      <td className="py-1.5 text-right text-slate-500">
+                        {p.trade_volume ? Math.round(p.trade_volume).toLocaleString() : '—'}
+                      </td>
+                      <td className="py-1.5 text-right text-slate-500">
+                        {p.share_volume ? Math.round(p.share_volume).toLocaleString() : '—'}
+                      </td>
                       <td className="py-1.5 text-right text-slate-500">
                         {p.turnover ? Math.round(p.turnover).toLocaleString() : '—'}
                       </td>
