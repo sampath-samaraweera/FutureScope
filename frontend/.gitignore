@@ -6,7 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+*.png
+*.svg
+*.jpg
 node_modules
 dist
 dist-ssr

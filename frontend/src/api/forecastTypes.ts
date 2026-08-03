@@ -23,6 +23,7 @@ export interface LivePricePoint {
   trade_volume?: number | null;
   share_volume?: number | null;
   turnover?: number | null;
+  exchange_rate?: number | null;
 }
 
 export interface LivePredictionResponse {

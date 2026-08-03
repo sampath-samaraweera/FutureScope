@@ -136,6 +136,9 @@ class LivePricePoint(BaseModel):
     trade_volume: Optional[float] = None
     share_volume: Optional[float] = None
     turnover: Optional[float] = None
+    exchange_rate: Optional[float] = Field(
+        None, description="Real USD/LKR rate (CBSL, via Frankfurter) for this date -- live, not fabricated."
+    )
 
 
 class LivePredictionResponse(RawHistoryPredictionResponse):

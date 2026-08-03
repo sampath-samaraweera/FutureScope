@@ -4,9 +4,10 @@ import SentimentBadge from './SentimentBadge';
 
 interface ResultsCardProps {
   result: PredictResponse;
+  actualCarPct?: number;
 }
 
-export default function ResultsCard({ result }: ResultsCardProps) {
+export default function ResultsCard({ result, actualCarPct }: ResultsCardProps) {
   const {
     predicted_car_magnitude_pct,
     is_likely_significant,
@@ -24,9 +25,9 @@ export default function ResultsCard({ result }: ResultsCardProps) {
   } = result;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="card p-6">
       {(category_mismatch_warning || ticker_mismatch_warning) && (
-        <div className="mb-4 space-y-1.5 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+        <div className="mb-4 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
           {category_mismatch_warning && <p>⚠ {category_mismatch_warning}</p>}
           {ticker_mismatch_warning && <p>⚠ {ticker_mismatch_warning}</p>}
         </div>
@@ -34,18 +35,23 @@ export default function ResultsCard({ result }: ResultsCardProps) {
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-slate-500">Expected market reaction</p>
-          <p className="mt-1 text-4xl font-bold tracking-tight text-slate-900">
+          <p className="text-sm font-medium text-slate-500">Expected market reaction</p>
+          <p className="mt-1 bg-gradient-to-br from-slate-900 to-slate-600 bg-clip-text text-5xl font-bold tracking-tight text-transparent">
             {predicted_car_magnitude_pct.toFixed(2)}%
           </p>
         </div>
         <span
-          className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold ${
             is_likely_significant
               ? 'bg-emerald-100 text-emerald-800'
               : 'bg-slate-100 text-slate-600'
           }`}
         >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              is_likely_significant ? 'bg-emerald-500' : 'bg-slate-400'
+            }`}
+          />
           {is_likely_significant ? 'Likely significant' : 'Likely minor'}
         </span>
       </div>
@@ -54,32 +60,49 @@ export default function ResultsCard({ result }: ResultsCardProps) {
         Significance cutoff: {significance_cutoff_pct.toFixed(2)}%
       </p>
 
-      <p className="mt-4 rounded-md bg-slate-50 p-3 text-sm text-slate-600">{magnitude_note}</p>
-
-      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-slate-500 sm:grid-cols-3">
-        <div>
-          <dt className="font-medium text-slate-400">Category</dt>
-          <dd>{CATEGORY_LABELS[resolved_category]}</dd>
+      {/* {actualCarPct !== undefined && (
+        <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm">
+          <span className="text-slate-500">Actual historical outcome: </span>
+          <span
+            className={`font-semibold ${actualCarPct >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}
+          >
+            {actualCarPct >= 0 ? '+' : ''}
+            {(actualCarPct * 100).toFixed(2)}%
+          </span>
+          <span className="ml-1 text-xs text-slate-400">
+            (what really happened - the model above predicts magnitude only, never direction)
+          </span>
         </div>
-        <div>
-          <dt className="font-medium text-slate-400">Volatility (10d) used</dt>
-          <dd>
+      )} */}
+
+      {magnitude_note && (
+        <p className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{magnitude_note}</p>
+      )}
+
+      <dl className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="rounded-xl bg-slate-50 p-3">
+          <dt className="text-xs font-medium text-slate-400">Category</dt>
+          <dd className="mt-0.5 text-sm font-medium text-slate-800">
+            {CATEGORY_LABELS[resolved_category]}
+          </dd>
+        </div>
+        <div className="rounded-xl bg-slate-50 p-3">
+          <dt className="text-xs font-medium text-slate-400">Volatility (10d) used</dt>
+          <dd className="mt-0.5 text-sm font-medium text-slate-800">
             {(resolved_volatility_10d * 100).toFixed(1)}%{' '}
             <span
-              className={
-                volatility_source === 'live'
-                  ? 'text-emerald-600'
-                  : 'text-amber-600'
-              }
+              className={`text-xs font-normal ${
+                volatility_source === 'live' ? 'text-emerald-600' : 'text-amber-600'
+              }`}
             >
-              ({volatility_source === 'live' ? 'live' : 'market default, not live'})
+              ({volatility_source === 'live' ? 'live' : 'market default'})
             </span>
           </dd>
         </div>
         {ticker_used && (
-          <div>
-            <dt className="font-medium text-slate-400">Company</dt>
-            <dd>{ticker_used}</dd>
+          <div className="rounded-xl bg-slate-50 p-3">
+            <dt className="text-xs font-medium text-slate-400">Company</dt>
+            <dd className="mt-0.5 text-sm font-medium text-slate-800">{ticker_used}</dd>
           </div>
         )}
       </dl>

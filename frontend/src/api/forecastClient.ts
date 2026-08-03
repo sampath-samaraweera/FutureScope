@@ -41,6 +41,7 @@ export function predictFromDataset(
   });
 }
 
-export function predictLive(symbol: string): Promise<LivePredictionResponse> {
-  return request<LivePredictionResponse>(`/predict-live/${encodeURIComponent(symbol)}`);
+export function predictLive(symbol: string, yoyInflation?: number): Promise<LivePredictionResponse> {
+  const query = yoyInflation !== undefined ? `?yoy_inflation=${encodeURIComponent(yoyInflation)}` : '';
+  return request<LivePredictionResponse>(`/predict-live/${encodeURIComponent(symbol)}${query}`);
 }

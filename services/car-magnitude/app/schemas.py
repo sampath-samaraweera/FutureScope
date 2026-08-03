@@ -69,6 +69,6 @@ class CompanySnapshot(BaseModel):
 
 
 class ModelMetrics(BaseModel):
-    """Loose passthrough — see model_metrics.json for the authoritative shape."""
+    """Loose passthrough - see model_metrics.json for the authoritative shape."""
 
     model_config = ConfigDict(extra="allow")

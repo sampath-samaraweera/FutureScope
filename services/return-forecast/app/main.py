@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import dataset
 from .feature_engineering import FEATURE_COLUMNS, MIN_WARMUP_ROWS, RAW_COLUMNS, build_scaled_window
-from .live_data import fetch_live_raw_history
+from .live_data import DEFAULT_YOY_INFLATION, fetch_live_raw_history
 from .model import get_model
 from .schemas import (
     N_FEATURES,
@@ -172,13 +172,16 @@ def predict_from_raw_history(request: RawHistoryPredictionRequest, http_request:
 
 
 @app.get("/predict-live/{symbol}", response_model=LivePredictionResponse)
-def predict_live(symbol: str, http_request: Request):
-    """Fetches real price history for `symbol` from CSE and predicts from
-    it -- no dataset, no client-supplied rows. Sector_Index/Exchange Rate/
-    YoY_Inflation_% are NOT live (no source wired up yet); see live_data.py."""
+def predict_live(symbol: str, http_request: Request, yoy_inflation: float = DEFAULT_YOY_INFLATION):
+    """Fetches real price history for `symbol` from CSE, plus real USD/LKR
+    rates, and predicts from it -- no dataset, no client-supplied rows.
+    `yoy_inflation` is a caller-supplied current YoY CCPI % (defaults to
+    DEFAULT_YOY_INFLATION) -- CBSL only publishes this as a monthly PDF, no
+    API, so it's an input rather than auto-fetched; see live_data.py.
+    Sector_Index is still NOT live (no source wired up at all)."""
     _require_model(http_request)
     try:
-        raw_df = fetch_live_raw_history(symbol, MIN_WARMUP_ROWS + SEQ_LEN)
+        raw_df = fetch_live_raw_history(symbol, MIN_WARMUP_ROWS + SEQ_LEN, yoy_inflation)
     except cse_client.CSEAuthError as exc:
         raise HTTPException(status_code=503, detail=str(exc))
     except cse_client.CSEUnavailableError as exc:
@@ -196,6 +199,7 @@ def predict_live(symbol: str, http_request: Request):
             trade_volume=row["TRADE VOLUME (No.)"],
             share_volume=row["SHARE VOLUME (No.)"],
             turnover=row["TURNOVER (Rs.)"],
+            exchange_rate=row["Exchange Rate"],
         )
         for row in raw_df.to_dict(orient="records")
     ]

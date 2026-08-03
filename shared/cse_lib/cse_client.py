@@ -52,7 +52,7 @@ VOL_WINDOW = 10    # must match the volatility_10d feature the model was trained
 # days, plenty for VOL_WINDOW.
 CHARTS_MAX_RANGE_DAYS = 30
 
-_BANK_NAME_RE = re.compile(r"\bBANK\b", re.I)
+_BANK_NAME_RE = re.compile(r"\bBANK(ING)?\b", re.I)
 
 
 def is_bank_name(company_name: str) -> bool:

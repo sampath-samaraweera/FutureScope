@@ -17,15 +17,22 @@ mechanism (see build_scaled_window / synthetic_rows_in_window in the
 response) -- honest about what's real vs. fabricated, and it actually works.
 
 Exchange Rate IS live now -- fetched from Frankfurter's CBSL-sourced USD/LKR
-rate feed (api.frankfurter.dev, no auth needed). Sector_Index and
-YoY_Inflation_% still have no live source wired up -- CSE's sector
-endpoints (allSectors/aspiData/snpData/marketIndices, all tested directly)
-only expose a current snapshot, not history, and no inflation feed is
-integrated. Those two still get small deterministic day-to-day drift
-instead of a flat constant -- purely so Sector_Index_Return/
-Rolling_20Day_Beta (which divide by variance) don't mathematically blow up
-into NaN on a zero-variance flat series. That drift is NOT real macro
-data; USD_LKR_Return, computed from the real Exchange Rate below, now is.
+rate feed (api.frankfurter.dev, no auth needed).
+
+YoY_Inflation_% has no automated live source (CBSL only publishes it as a
+monthly PDF press release, not an API -- fetching/parsing that PDF was
+tried and dropped: real, but adds a fragile dependency for one figure that
+only changes monthly anyway). Instead it's a caller-supplied input with a
+sensible default (see DEFAULT_YOY_INFLATION) -- the caller can pass the
+real current month's published figure if they want full accuracy.
+
+Sector_Index still has no live source at all (CSE's sector endpoints --
+allSectors/aspiData/snpData/marketIndices, all tested directly -- only
+expose a current snapshot, not history) and keeps a small deterministic
+day-to-day drift instead of a flat constant, purely so
+Sector_Index_Return/Rolling_20Day_Beta (which divide by variance) don't
+mathematically blow up into NaN on a zero-variance flat series. That
+drift is NOT real macro data.
 """
 from datetime import datetime, timedelta
 
@@ -35,6 +42,7 @@ from cse_lib import cse_client
 
 FETCH_WINDOW_DAYS = 30  # cse_lib.CHARTS_MAX_RANGE_DAYS -- the max one call allows
 FRANKFURTER_URL = "https://api.frankfurter.dev/v2/rates"
+DEFAULT_YOY_INFLATION = 6.5  # used unless the caller supplies the real published figure
 
 
 def fetch_live_usd_lkr_rates(from_date: datetime, to_date: datetime) -> dict[str, float]:
@@ -54,11 +62,16 @@ def fetch_live_usd_lkr_rates(from_date: datetime, to_date: datetime) -> dict[str
     return {row["date"]: row["rate"] for row in resp.json()}
 
 
-def fetch_live_raw_history(symbol: str, min_rows: int) -> pd.DataFrame:
+def fetch_live_raw_history(
+    symbol: str, min_rows: int, yoy_inflation: float = DEFAULT_YOY_INFLATION
+) -> pd.DataFrame:
     """Returns a DataFrame with a 'Date' column plus all of
     feature_engineering.RAW_COLUMNS, sorted ascending. `min_rows` is
     accepted for interface symmetry with the shortfall-handling caller, but
-    a single CSE call is what it is -- padding covers any gap.
+    a single CSE call is what it is -- padding covers any gap. `yoy_inflation`
+    is the caller-supplied current YoY CCPI inflation % (see module
+    docstring for why this isn't fetched automatically) -- applied as a
+    flat value across every row, since it's a monthly figure, not daily.
     Raises ValueError if CSE returns nothing at all."""
     to_date = datetime.utcnow()
     from_date = to_date - timedelta(days=FETCH_WINDOW_DAYS)
@@ -101,6 +114,6 @@ def fetch_live_raw_history(symbol: str, min_rows: int) -> pd.DataFrame:
             "TURNOVER (Rs.)": r.get("turnover"),
             "Sector_Index": 100.0 * wobble,
             "Exchange Rate": last_known_fx,
-            "YoY_Inflation_%": 5.0 * wobble,
+            "YoY_Inflation_%": yoy_inflation,
         })
     return pd.DataFrame.from_records(records)

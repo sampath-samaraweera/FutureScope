@@ -71,7 +71,10 @@ def ticker_mentioned_in_headline(headline: str, ticker: str, company_name: str) 
     """
     headline_upper = headline.upper()
     ticker_base = ticker.split(".")[0]
-    if re.search(rf"\b{re.escape(ticker_base)}\b", headline_upper):
+    # Prefix match only (no trailing \b): common colloquial shorthand like
+    # "ComBank" for Commercial Bank (ticker COMB) glues the ticker straight
+    # onto extra letters, so a whole-word match would miss it.
+    if re.search(rf"\b{re.escape(ticker_base)}", headline_upper):
         return True
 
     tokens = _significant_tokens(company_name)
