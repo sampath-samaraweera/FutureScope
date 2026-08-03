@@ -3,13 +3,13 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from dotenv import load_dotenv
+from cse_lib.env import load_shared_env
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 APP_DIR = Path(__file__).resolve().parent
-load_dotenv(APP_DIR.parent / ".env")  # backend/.env -- must run before cse_client reads CSE_ACCESS_TOKEN
+load_shared_env()  # repo-root .env -- must run before cse_client reads CSE_ACCESS_TOKEN
 
 from app.inference import CARPredictor
 from app.routers import companies, metrics, predict

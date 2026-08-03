@@ -1,11 +1,10 @@
 import logging
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from cse_lib import cse_client
-from dotenv import load_dotenv
+from cse_lib.env import load_shared_env
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,7 +25,7 @@ from .schemas import (
     RawHistoryPredictionResponse,
 )
 
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+load_shared_env()  # repo-root .env
 
 logger = logging.getLogger("uvicorn.error")
 

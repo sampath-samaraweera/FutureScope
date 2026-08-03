@@ -1,0 +1,10 @@
+{
+  "total_return": 0.7981673980809803,
+  "annual_return": 0.7362664798712584,
+  "annual_volatility": 0.34084618629962093,
+  "sharpe_ratio": 2.160113591554261,
+  "max_drawdown": 0.19333207316832685,
+  "total_transaction_costs": 93689.0022502174,
+  "final_portfolio_value": 1798167.3980809802,
+  "n_trading_days": 268
+}

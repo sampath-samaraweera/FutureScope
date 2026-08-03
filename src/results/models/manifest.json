@@ -1,0 +1,38 @@
+{
+  "checkpoint_filename": "final_model.pt",
+  "asset_names": [
+    "COMB",
+    "HNB",
+    "SEYB",
+    "UBC",
+    "NDB",
+    "SAMP",
+    "DFCC",
+    "PABC",
+    "NTB",
+    "ABL"
+  ],
+  "n_assets": 10,
+  "n_features_per_asset": 15,
+  "window_size": 30,
+  "vsn_hidden_dim": 64,
+  "lstm_hidden_dim": 128,
+  "lstm_num_layers": 2,
+  "mha_num_heads": 4,
+  "gnn_hidden_dim": 64,
+  "gnn_num_heads": 2,
+  "gnn_num_layers": 2,
+  "n_regimes": 3,
+  "latent_state_dim": 128,
+  "actor_hidden_dims": [
+    256,
+    128
+  ],
+  "critic_hidden_dims": [
+    256,
+    128
+  ],
+  "allow_short": false,
+  "max_position_size": 0.3,
+  "min_trading_days_required": 60
+}

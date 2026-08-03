@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from 'react-router-dom';
 import NewsImpact from './pages/NewsImpact';
 import CompanySnapshot from './pages/CompanySnapshot';
 import ReturnForecast from './pages/ReturnForecast';
+import PortfolioAllocation from './pages/PortfolioAllocation';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `rounded-lg px-3.5 py-2 text-sm font-medium transition-all ${
@@ -31,6 +32,9 @@ function App() {
             <NavLink to="/forecast" className={navLinkClass}>
               Return Forecast
             </NavLink>
+            <NavLink to="/portfolio" className={navLinkClass}>
+              Portfolio Allocation
+            </NavLink>
           </nav>
         </div>
       </header>
@@ -40,6 +44,7 @@ function App() {
           <Route path="/" element={<NewsImpact />} />
           <Route path="/companies" element={<CompanySnapshot />} />
           <Route path="/forecast" element={<ReturnForecast />} />
+          <Route path="/portfolio" element={<PortfolioAllocation />} />
         </Routes>
       </main>
     </div>

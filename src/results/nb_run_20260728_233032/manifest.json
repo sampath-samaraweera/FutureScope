@@ -1,0 +1,26 @@
+{
+  "run_id": "20260728_233032",
+  "timestamp": "2026-07-28T23:41:22.648964",
+  "seed": 42,
+  "device": "cpu",
+  "n_assets": 10,
+  "n_features": 150,
+  "window_size": 30,
+  "total_timesteps": 5120,
+  "parameters": {
+    "regime_encoder": 1955108,
+    "actor": 68500,
+    "critic": 67329,
+    "total": 2090937
+  },
+  "test_summary": {
+    "total_return": 0.1532366836486747,
+    "annual_return": 0.4777559166832168,
+    "annual_volatility": 0.20508796602590498,
+    "sharpe_ratio": 2.3295170638628258,
+    "max_drawdown": 0.10903135006027392,
+    "total_transaction_costs": 3027.923266607768,
+    "final_portfolio_value": 1153236.6836486747,
+    "n_trading_days": 92.0
+  }
+}
